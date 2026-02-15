@@ -7,7 +7,7 @@ data class Player(
 
     val avatar: String?,
 
-    val country: String,
+    val location: String,
 
     val followers: Int,
 

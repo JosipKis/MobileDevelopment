@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChessApi1">
         <activity
-            android:name=".PlayerDetailsActivity"
+            android:name=".PlayerDetailActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

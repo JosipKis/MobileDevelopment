@@ -58,5 +58,19 @@
 
         </androidx.cardview.widget.CardView>
 
+        <LinearLayout
+            android:id="@+id/defaultContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include android:id="@+id/card1" layout="@layout/player_preview"/>
+            <include android:id="@+id/card2" layout="@layout/player_preview"/>
+            <include android:id="@+id/card3" layout="@layout/player_preview"/>
+            <include android:id="@+id/card4" layout="@layout/player_preview"/>
+            <include android:id="@+id/card5" layout="@layout/player_preview"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
