@@ -12,6 +12,7 @@ class PlayerDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
