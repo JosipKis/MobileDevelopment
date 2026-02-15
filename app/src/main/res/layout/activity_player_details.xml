@@ -30,7 +30,15 @@
             <TextView android:id="@+id/tvFollowers" android:layout_height="match_parent" android:layout_width="match_parent"/>
             <TextView android:id="@+id/tvStatus" android:layout_height="match_parent" android:layout_width="match_parent"/>
 
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back" />
         </LinearLayout>
+
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

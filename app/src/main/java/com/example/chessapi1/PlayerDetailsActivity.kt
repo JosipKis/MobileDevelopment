@@ -19,6 +19,10 @@ class PlayerDetailsActivity : AppCompatActivity() {
         binding = ActivityPlayerDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
+
         val playerJson = intent.getStringExtra("player")
         val rank = intent.getIntExtra("rank", 0)
 
