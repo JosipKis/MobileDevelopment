@@ -1,11 +1,15 @@
 package com.example.chessapi1
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.example.chessapi1.databinding.ActivityMainBinding
 import com.example.chessapi1.network.ChessComApiClient
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -29,22 +33,25 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val player = ChessComApiClient.api.getPlayer(username)
+                val stats = ChessComApiClient.api.getStats(username)
 
-                binding.tvResult.text = """
-                    Username: ${player.username}
-                    Name: ${player.name ?: "N/A"}
-                    Country: ${player.country}
-                    Followers: ${player.followers}
-                    Status: ${player.status}
-                """.trimIndent()
+                val rank = stats.chess_rapid?.last?.rating ?: 0
 
-                player.avatar?.let {
-                    binding.imgAvatar.load(it)
+                binding.cardPreview.visibility = View.VISIBLE
+                binding.tvPreviewName.text = player.name ?: "No name"
+                binding.tvPreviewUsername.text = "@${player.username}"
+                binding.tvPreviewRank.text = "Rapid rating: $rank"
+
+                binding.cardPreview.setOnClickListener {
+                    val intent = Intent(this@MainActivity, PlayerDetailsActivity::class.java)
+                    intent.putExtra("player", Gson().toJson(player))
+                    intent.putExtra("rank", rank)
+                    startActivity(intent)
                 }
 
             } catch (e: Exception) {
-                binding.tvResult.text = "com.example.chessapi1.model.Player not found 😢"
-                binding.imgAvatar.setImageDrawable(null)
+                Toast.makeText(this@MainActivity, "Player not found", Toast.LENGTH_SHORT).show()
+                binding.cardPreview.visibility = View.GONE
             }
         }
     }
