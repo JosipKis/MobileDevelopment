@@ -30,6 +30,7 @@ interface MovieDao {
     @Query("DELETE FROM movies WHERE id=:id")
     suspend fun deleteMovieById(id: Int)
 
-    @Query("SELECT * FROM movies WHERE name LIKE :query")
+    @Query("SELECT * FROM movies WHERE name LIKE '%' || :query || '%' COLLATE NOCASE")
     fun searchMovie(query: String): Flow<List<MovieEntity>>
+
 }
