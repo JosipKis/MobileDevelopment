@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.filmoviapp1.domain.model.Movie
@@ -30,6 +31,10 @@ import com.example.filmoviapp1.presentation.components.EmptyScreen
 import com.example.filmoviapp1.presentation.components.ErrorScreen
 import com.example.filmoviapp1.presentation.components.MoviesList
 import com.example.filmoviapp1.presentation.components.SearchBar
+import com.example.filmoviapp1.theme.NetflixDarkGray
+import com.example.filmoviapp1.theme.NetflixGray
+import com.example.filmoviapp1.theme.NetflixRed
+import com.example.filmoviapp1.theme.NetflixWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,17 +44,20 @@ fun MovieScreen (
     onNavigateToDetail: (Movie) -> Unit = {}
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title  = {
-                    Text("My Movie Library")
+                    Text(
+                        "My Movie Library",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 22.sp
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
@@ -59,12 +67,12 @@ fun MovieScreen (
                     onClick = onAddClick,
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add Movie +")
+                    Icon(Icons.Filled.Add, contentDescription = "Add Movie +", tint = MaterialTheme.colorScheme.onPrimary)
                 }
             }
-        }
-    ) {
-            paddingValues ->
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
         Column (
             modifier = Modifier
                 .fillMaxSize()
@@ -75,20 +83,19 @@ fun MovieScreen (
                 onQueryChange = { viewModel.updateSearchQuery(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(8.dp),
+                placeholderColor = NetflixGray,
             )
 
-            // Content
             when (uiState) {
                 is MovieUiState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(color = NetflixRed)
                     }
                 }
-
                 is MovieUiState.Success -> {
                     MoviesList(
                         movies = (uiState as MovieUiState.Success).movies,
@@ -98,19 +105,22 @@ fun MovieScreen (
                         },
                         onDeleteClick = { movie ->
                             viewModel.deleteMovie(movie.id)
-                        }
+                        },
+                        cardColor = NetflixDarkGray,
+                        titleColor = NetflixWhite,
+                        subtitleColor = NetflixGray,
+                        deleteColor = NetflixRed
                     )
                 }
-
                 is MovieUiState.Error -> {
                     ErrorScreen(
                         message = (uiState as MovieUiState.Error).message,
-                        onRetry = viewModel::clearError
+                        onRetry = viewModel::clearError,
+                        textColor = NetflixRed
                     )
                 }
-
                 is MovieUiState.Empty -> {
-                    EmptyScreen (onAddClick = onAddClick)
+                    EmptyScreen(onAddClick = onAddClick)
                 }
             }
         }

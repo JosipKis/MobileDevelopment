@@ -2,7 +2,8 @@ package com.example.filmoviapp1.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val NetflixRed = Color(0xFFE50914)
+val NetflixBlack = Color(0xFF141414)
+val NetflixDarkGray = Color(0xFF1E1E1E)
+val NetflixGray = Color(0xFFAAAAAA)
+val NetflixWhite = Color(0xFFFFFFFF)

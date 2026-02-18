@@ -8,22 +8,32 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
-fun SearchBar (
+fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    placeholderColor: Color = Color.LightGray,
+    iconColor: Color = Color.Red
 ) {
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier.fillMaxWidth(),
         placeholder = {
-            Text("Search by Move Title")
+            Text(
+                "Search by Movie Title",
+                color = placeholderColor
+            )
         },
         leadingIcon = {
-            Icon(Icons.Filled.Search, contentDescription = null)
+            Icon(
+                Icons.Filled.Search,
+                contentDescription = null,
+                tint = iconColor
+            )
         },
         singleLine = true
     )

@@ -1,5 +1,6 @@
 package com.example.filmoviapp1.presentation.components
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,22 +34,27 @@ import com.example.filmoviapp1.domain.model.Movie
 fun MovieCard(
     movie: Movie,
     onMovieClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    cardColor: Color = Color.Black,
+    titleColor: Color = Color.White,
+    subtitleColor: Color = Color.LightGray,
+    deleteColor: Color = Color.Red
 ) {
-    Card (
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onMovieClick() }
             .padding(horizontal = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Placeholder slika
+            // Slika filma
             if (movie.imageUri != null) {
                 AsyncImage(
                     model = movie.imageUri,
@@ -59,57 +65,54 @@ fun MovieCard(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Surface (
+                Surface(
                     modifier = Modifier
                         .size(50.dp)
                         .padding(end = 16.dp),
                     shape = MaterialTheme.shapes.medium,
                     color = MaterialTheme.colorScheme.primaryContainer
                 ) {
-                    Box (
+                    Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = movie.name.first().toString(),
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = titleColor
                         )
                     }
                 }
             }
 
-            // Basic Info o filmu
-            Column (
-                modifier = Modifier.weight(1f)
-            ) {
+            // Info o filmu
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = movie.name,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = titleColor
                 )
 
                 Text(
                     text = movie.director,
                     fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.outline
+                    color = subtitleColor
                 )
 
                 Text(
-                    text = movie.releaseDate.toString(),
+                    text = movie.releaseDate,
                     fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.outline
+                    color = subtitleColor
                 )
             }
 
-            // Delete
-            IconButton(
-                onClick = onDeleteClick
-            ) {
+            IconButton(onClick = onDeleteClick) {
                 Icon(
                     Icons.Filled.Delete,
                     contentDescription = "Delete",
-                    tint = MaterialTheme.colorScheme.error
+                    tint = deleteColor
                 )
             }
         }
