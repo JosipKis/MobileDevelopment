@@ -45,7 +45,8 @@ fun MovieDetailScreen (
     movieId: Int,
     viewModel: MovieDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    onEditClick: (Movie) -> Unit = {}
+    onEditClick: (Movie) -> Unit = {},
+    onPhotoClick: () -> Unit = {}
 ) {
     val movie by viewModel.movie.collectAsStateWithLifecycle()
 
@@ -122,6 +123,19 @@ fun MovieDetailScreen (
                 MovieInfoCard("Release Date", value = movie.releaseDate)
 
                 Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = onPhotoClick,
+                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                ) {
+                    Icon(Icons.Filled.PhotoCamera,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text("Take Photo +")
+                }
             }
         } ?: run {
             Box(

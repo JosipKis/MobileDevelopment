@@ -24,4 +24,14 @@ class MovieDetailViewModel @Inject constructor(
             _movie.value = repository.getMovieById(id)
         }
     }
+
+    fun updateMovieImage(imageUri: String) {
+        _movie.value?.let { movie ->
+            val updated = movie.copy(imageUri = imageUri)
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.updateMovie(updated)
+                _movie.value = updated
+            }
+        }
+    }
 }

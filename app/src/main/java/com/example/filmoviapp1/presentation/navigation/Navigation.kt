@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.filmoviapp1.domain.useCases.AddMovie
+import com.example.filmoviapp1.presentation.components.CameraScreen
 import com.example.filmoviapp1.presentation.movie.MovieScreen
 import com.example.filmoviapp1.presentation.movie.create.AddMovieScreen
 import com.example.filmoviapp1.presentation.movie.detail.MovieDetailScreen
@@ -20,6 +21,10 @@ sealed class Screen(val route: String) {
     object AddMovie: Screen("add_movie_screen")
     object EditMovie: Screen("edit_movie/{movieId}") {
         fun createRoute(movieId: Int) = "edit_movie/$movieId"
+    }
+
+    object Camera: Screen("camera_screen/{movieId}") {
+        fun createRoute(movieId: Int) = "camera_screen/$movieId"
     }
 }
 
@@ -68,6 +73,9 @@ fun Navigation () {
                 },
                 onEditClick = { movie ->
                     navController.navigate(Screen.EditMovie.createRoute(movie.id))
+                },
+                onPhotoClick = {
+                    navController.navigate(Screen.Camera.createRoute(movieId))
                 }
             )
         }
@@ -97,6 +105,25 @@ fun Navigation () {
                     navController.popBackStack()
                 },
                 onSaveSuccess = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(
+            route = Screen.Camera.route,
+            arguments = listOf(
+                navArgument("movieId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: return@composable
+            CameraScreen(
+                context = context,
+                movieId = movieId,
+                onPhotoTaken = { photoPath ->
+                    navController.popBackStack()
+                },
+                onBackClick = {
                     navController.popBackStack()
                 }
             )
