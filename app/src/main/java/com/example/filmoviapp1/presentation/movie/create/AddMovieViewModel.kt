@@ -134,7 +134,9 @@ class AddMovieViewModel @Inject constructor(
     private fun validateForm(): Boolean {
         return _name.value.isNotEmpty() &&
                 _director.value.isNotEmpty() &&
-                _category.value.isNotEmpty()
+                _category.value.isNotEmpty() &&
+                _movieLength.value.isNotEmpty() &&
+                _releaseDate.value.isNotEmpty()
     }
 
     fun resetState() {

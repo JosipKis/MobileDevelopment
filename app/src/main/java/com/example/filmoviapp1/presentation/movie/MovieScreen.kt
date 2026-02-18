@@ -36,8 +36,6 @@ import com.example.filmoviapp1.presentation.components.SearchBar
 fun MovieScreen (
     viewModel: MovieViewModel = hiltViewModel(),
     onAddClick: () -> Unit = {},
-    onEditClick: (Int) -> Unit = {},
-    onMovieClick: (Movie) -> Unit = {},
     onNavigateToDetail: (Movie) -> Unit = {}
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,11 +54,13 @@ fun MovieScreen (
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddClick,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(Icons.Filled.Add, "Add Movie +")
+            if (uiState !is MovieUiState.Empty) {
+                FloatingActionButton(
+                    onClick = onAddClick,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = "Add Movie +")
+                }
             }
         }
     ) {
