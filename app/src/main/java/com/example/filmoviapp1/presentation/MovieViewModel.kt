@@ -1,5 +1,6 @@
 package com.example.filmoviapp1.presentation
 
+import androidx.camera.core.UseCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.filmoviapp1.domain.model.Movie
@@ -15,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieViewModel @Inject constructor(
     private val getMovies: GetMovies,
-    private val deleteMovie: DeleteMovie,
+    private val deleteMovieUseCase: DeleteMovie,
     private val searchMovie: SearchMovie
 ) : ViewModel() {
     private val _uiState =
@@ -52,13 +53,13 @@ class MovieViewModel @Inject constructor(
 
     fun deleteMovie(id: Int) {
         viewModelScope.launch {
-            try {
-                deleteMovie(id)
-            } catch (error: Exception) {
-                _uiState.value = MovieUiState.Error(
-                    error.message ?: "An Error Occurred When Deleting the Movie"
-                )
-            }
+            deleteMovieUseCase(id)
+                .onSuccess {  }
+                .onFailure { error ->
+                    _uiState.value = MovieUiState.Error(
+                        error.message ?: "An Error Occurred While Deleting a Movie"
+                    )
+                }
         }
     }
 

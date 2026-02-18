@@ -25,7 +25,7 @@ interface MovieDao {
     suspend fun updateMovie(movieEntity: MovieEntity)
 
     @Delete
-    suspend fun deleteMovie(movieEntity: MovieEntity)
+    suspend fun deleteMovieByMovie(movieEntity: MovieEntity)
 
     @Query("DELETE FROM movies WHERE id=:id")
     suspend fun deleteMovieById(id: Int)
