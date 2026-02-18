@@ -26,7 +26,7 @@ object FilmAppModule {
             context,
             MovieDatabase::class.java,
             MovieDatabase.DATABASE_NAME
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Singleton

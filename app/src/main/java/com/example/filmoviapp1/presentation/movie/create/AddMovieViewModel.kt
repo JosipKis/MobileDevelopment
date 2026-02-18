@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +35,7 @@ class AddMovieViewModel @Inject constructor(
     private val _movieLength = MutableStateFlow("")
     val movieLength = _movieLength.asStateFlow()
 
-    private val _releaseDate = MutableStateFlow("")
+    private val _releaseDate = MutableStateFlow<LocalDate?>(null)
     val releaseDate = _releaseDate.asStateFlow()
 
     private val _imageUri = MutableStateFlow("")
@@ -58,7 +59,7 @@ class AddMovieViewModel @Inject constructor(
         _movieLength.value = movieLength
     }
 
-    fun setReleaseDate(releaseDate: String) {
+    fun setReleaseDate(releaseDate: LocalDate) {
         _releaseDate.value = releaseDate
     }
 
@@ -87,7 +88,7 @@ class AddMovieViewModel @Inject constructor(
     fun loadMovieForEditDirect(movie: Movie) {
         _name.value = movie.name
         _director.value = movie.director
-        _category.value = movie.releaseDate
+        _category.value = movie.category
         _movieLength.value = movie.movieLength
         _releaseDate.value = movie.releaseDate
         _imageUri.value = movie.imageUri ?: ""
@@ -109,7 +110,7 @@ class AddMovieViewModel @Inject constructor(
                 director = _director.value,
                 category = _category.value,
                 movieLength = _movieLength.value,
-                releaseDate = _releaseDate.value,
+                releaseDate = _releaseDate.value!!,
                 imageUri = _imageUri.value,
             )
 
@@ -136,7 +137,7 @@ class AddMovieViewModel @Inject constructor(
                 _director.value.isNotEmpty() &&
                 _category.value.isNotEmpty() &&
                 _movieLength.value.isNotEmpty() &&
-                _releaseDate.value.isNotEmpty()
+                _releaseDate.value != null
     }
 
     fun resetState() {

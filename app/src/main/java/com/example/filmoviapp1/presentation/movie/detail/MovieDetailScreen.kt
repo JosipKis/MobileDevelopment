@@ -120,7 +120,7 @@ fun MovieDetailScreen (
 
                 MovieInfoCard(label = "Genre", value = movie.category)
 
-                MovieInfoCard("Release Date", value = movie.releaseDate)
+                MovieInfoCard("Release Date", value = movie.releaseDate.toString())
 
                 Spacer(modifier = Modifier.height(24.dp))
             }

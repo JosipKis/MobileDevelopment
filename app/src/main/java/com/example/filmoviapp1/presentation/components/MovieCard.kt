@@ -105,7 +105,7 @@ fun MovieCard(
                 )
 
                 Text(
-                    text = movie.releaseDate,
+                    text = movie.releaseDate.toString(),
                     fontSize = 12.sp,
                     color = subtitleColor
                 )

@@ -1,5 +1,8 @@
 package com.example.filmoviapp1.presentation.movie.create
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +24,9 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -37,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -45,6 +51,10 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.filmoviapp1.data.database.entity.MovieCategory
 import com.example.filmoviapp1.domain.model.Movie
+import java.time.LocalDate
+import java.util.Calendar
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -208,14 +218,11 @@ fun AddMovieScreen (
                         singleLine = true
                     )
 
-                    TextField(
-                        value = releaseDate,
-                        onValueChange = { viewModel.setReleaseDate(it) },
-                        label = {Text("Release Date*")},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        singleLine = true
+                    DatePickerField(
+                        selectedDate = viewModel.releaseDate.collectAsState().value,
+                        onDateSelected = { newDate ->
+                            viewModel.setReleaseDate(newDate)
+                        }
                     )
 
                     Spacer(
@@ -266,4 +273,43 @@ fun AddMovieScreen (
         }
     }
 
+}
+
+@Composable
+fun DatePickerField(
+    selectedDate: LocalDate?,
+    onDateSelected: (LocalDate) -> Unit,
+    label: String = "Release Date",
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val initialDate = selectedDate ?: LocalDate.now()
+    val displayText = selectedDate?.toString() ?: "Select Date"
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable {
+                DatePickerDialog(
+                    context,
+                    { _: DatePicker, year, month, day ->
+                        onDateSelected(LocalDate.of(year, month + 1, day))
+                    },
+                    initialDate.year,
+                    initialDate.monthValue - 1,
+                    initialDate.dayOfMonth
+                ).show()
+            }
+    ) {
+        OutlinedTextField(
+            value = displayText,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label, color = Color.Red) },
+            placeholder = { Text("Select Date", color = Color.LightGray) },
+            textStyle = LocalTextStyle.current.copy(color = Color.White),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }

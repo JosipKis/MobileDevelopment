@@ -1,5 +1,7 @@
 package com.example.filmoviapp1.domain.model
 
+import java.time.LocalDate
+
 data class Movie(
     val id: Int = 0,
     val name: String,
@@ -7,6 +9,6 @@ data class Movie(
     val movieLength: String = "",
     val category: String = "",
     val imageUri: String? = null,
-    val releaseDate: String
+    val releaseDate: LocalDate
 ) {
 }
