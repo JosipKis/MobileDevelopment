@@ -60,8 +60,7 @@ fun MovieCard(
                     model = movie.imageUri,
                     contentDescription = movie.name,
                     modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape),
+                        .size(60.dp),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -87,12 +86,16 @@ fun MovieCard(
             }
 
             // Info o filmu
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
+            ) {
                 Text(
                     text = movie.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = titleColor
+                    color = titleColor,
                 )
 
                 Text(
