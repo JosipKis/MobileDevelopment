@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -37,17 +39,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.filmoviapp1.data.database.entity.MovieCategory
 import com.example.filmoviapp1.domain.model.Movie
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMovieScreen (
+    navController: NavHostController,
     viewModel: AddMovieViewModel = hiltViewModel(),
     movie: Movie? = null,
     movieIdForEdit: Int? = null,
     onBackClick: () -> Unit = {},
-    onSaveSuccess: () -> Unit = {}
+    onSaveSuccess: () -> Unit = {},
+    onPhotoClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val name by viewModel.name.collectAsStateWithLifecycle()
@@ -58,6 +63,17 @@ fun AddMovieScreen (
     val imageUri by viewModel.imageUri.collectAsStateWithLifecycle()
 
     val categories = MovieCategory.entries.toTypedArray()
+
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val photoPathFlow = savedStateHandle?.getStateFlow<String?>("photoPath", null)
+    val photoPath by photoPathFlow?.collectAsStateWithLifecycle() ?: remember { mutableStateOf(null) }
+
+    LaunchedEffect(photoPath) {
+        photoPath?.let {
+            viewModel.setImageUri(it)
+            savedStateHandle?.remove<String>("photoPath")
+        }
+    }
 
     LaunchedEffect(movieIdForEdit) {
         if (movieIdForEdit != null) {
@@ -198,6 +214,23 @@ fun AddMovieScreen (
                             .padding(bottom = 16.dp),
                         singleLine = true
                     )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Button(
+                        onClick = onPhotoClick,
+                        modifier = Modifier.fillMaxWidth().height(50.dp)
+                    ) {
+                        Icon(Icons.Filled.PhotoCamera,
+                            contentDescription = null
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text("Take Photo +")
+                    }
 
                     Spacer(
                         modifier = Modifier.height(16.dp)

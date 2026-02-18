@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.filmoviapp1.domain.useCases.AddMovie
 import com.example.filmoviapp1.presentation.components.CameraScreen
 import com.example.filmoviapp1.presentation.movie.MovieScreen
 import com.example.filmoviapp1.presentation.movie.create.AddMovieScreen
@@ -22,7 +21,6 @@ sealed class Screen(val route: String) {
     object EditMovie: Screen("edit_movie/{movieId}") {
         fun createRoute(movieId: Int) = "edit_movie/$movieId"
     }
-
     object Camera: Screen("camera_screen/{movieId}") {
         fun createRoute(movieId: Int) = "camera_screen/$movieId"
     }
@@ -39,9 +37,7 @@ fun Navigation () {
     ) {
         composable(Screen.Movies.route) {
             MovieScreen(
-                onAddClick = {
-                    navController.navigate(Screen.AddMovie.route)
-                },
+                onAddClick = { navController.navigate(Screen.AddMovie.route) },
                 onNavigateToDetail = { movie ->
                     navController.navigate(Screen.MovieDetail.createRoute(movie.id))
                 }
@@ -49,28 +45,41 @@ fun Navigation () {
         }
 
         composable(Screen.AddMovie.route) {
-            AddMovieScreen (
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onSaveSuccess = {
-                    navController.popBackStack()
+            AddMovieScreen(
+                navController = navController,
+                movieIdForEdit = null,
+                onBackClick = { navController.popBackStack() },
+                onSaveSuccess = { navController.popBackStack() },
+                onPhotoClick = {
+                    navController.navigate(Screen.Camera.createRoute(-1)) // -1 za novi movie
                 }
             )
         }
 
-        composable (
-            Screen.MovieDetail.route,
-            arguments = listOf(
-                navArgument("movieId") {type = NavType.IntType}
-            )
+        composable(
+            route = Screen.EditMovie.route,
+            arguments = listOf(navArgument("movieId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt("movieId")
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: return@composable
+            AddMovieScreen(
+                navController = navController,
+                movieIdForEdit = movieId,
+                onBackClick = { navController.popBackStack() },
+                onSaveSuccess = { navController.popBackStack() },
+                onPhotoClick = {
+                    navController.navigate(Screen.Camera.createRoute(movieId))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.MovieDetail.route,
+            arguments = listOf(navArgument("movieId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getInt("movieId")!!
             MovieDetailScreen(
-                movieId = movieId!!,
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                movieId = movieId,
+                onBackClick = { navController.popBackStack() },
                 onEditClick = { movie ->
                     navController.navigate(Screen.EditMovie.createRoute(movie.id))
                 },
@@ -80,52 +89,23 @@ fun Navigation () {
             )
         }
 
-        composable (Screen.AddMovie.route) {
-            AddMovieScreen (
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onSaveSuccess = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable (
-            route = Screen.EditMovie.route,
-            arguments = listOf(
-                navArgument("movieId") {type = NavType.IntType}
-            )
-        ) {backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt("movieId") ?: return@composable
-            AddMovieScreen (
-                movie = null,
-                movieIdForEdit = movieId,
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onSaveSuccess = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
         composable(
             route = Screen.Camera.route,
-            arguments = listOf(
-                navArgument("movieId") { type = NavType.IntType }
-            )
+            arguments = listOf(navArgument("movieId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt("movieId") ?: return@composable
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: -1
+
             CameraScreen(
                 context = context,
                 movieId = movieId,
                 onPhotoTaken = { photoPath ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("photoPath", photoPath)
+
                     navController.popBackStack()
                 },
-                onBackClick = {
-                    navController.popBackStack()
-                }
+                onBackClick = { navController.popBackStack() }
             )
         }
     }

@@ -3,6 +3,7 @@ package com.example.filmoviapp1.presentation.components
 import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
