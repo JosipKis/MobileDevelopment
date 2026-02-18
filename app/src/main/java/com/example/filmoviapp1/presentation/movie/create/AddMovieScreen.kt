@@ -13,7 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,12 +28,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.filmoviapp1.data.database.entity.MovieCategory
 import com.example.filmoviapp1.domain.model.Movie
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +56,8 @@ fun AddMovieScreen (
     val movieLength by viewModel.movieLength.collectAsStateWithLifecycle()
     val releaseDate by viewModel.releaseDate.collectAsStateWithLifecycle()
     val imageUri by viewModel.imageUri.collectAsStateWithLifecycle()
+
+    val categories = MovieCategory.entries.toTypedArray()
 
     LaunchedEffect(movieIdForEdit) {
         if (movieIdForEdit != null) {
@@ -134,15 +143,41 @@ fun AddMovieScreen (
                         singleLine = true
                     )
 
-                    TextField(
-                        value = category,
-                        onValueChange = { viewModel.setCategory(it) },
-                        label = {Text("Category*")},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        singleLine = true
-                    )
+                    var expanded by remember { mutableStateOf(false) }
+
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded }
+                    ) {
+                        TextField(
+                            value = category,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Category*") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                            },
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            categories.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.display) },
+                                    onClick = {
+                                        viewModel.setCategory(it.display)
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
 
                     TextField(
                         value = movieLength,
