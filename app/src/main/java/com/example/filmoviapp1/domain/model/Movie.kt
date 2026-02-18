@@ -7,6 +7,6 @@ data class Movie(
     val movieLength: String = "",
     val category: String = "",
     val imageUri: String? = null,
-    val releaseDate: Long
+    val releaseDate: String
 ) {
 }

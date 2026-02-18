@@ -12,5 +12,5 @@ data class MovieEntity(
     val movieLength: String = "",
     val category: String = "",
     val imageUri: String? = null,
-    val releaseDate: Long
+    val releaseDate: String
 )
