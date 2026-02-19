@@ -20,6 +20,7 @@ class AddMovieViewModel @Inject constructor(
     private val updateMovie: UpdateMovie,
     private val repository: MovieRepository
 ) : ViewModel() {
+    private var isMovieLoaded: Boolean = false
     private val _uiState = MutableStateFlow<AddMovieUiState>(AddMovieUiState.Idle)
     val uiState = _uiState.asStateFlow()
 
@@ -68,6 +69,9 @@ class AddMovieViewModel @Inject constructor(
     }
 
     fun loadMovieForEditing(id: Int) {
+        if (isMovieLoaded) return
+        isMovieLoaded = true
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val movie = repository.getMovieById(id)
@@ -81,11 +85,14 @@ class AddMovieViewModel @Inject constructor(
                     movieId = movie.id
                 }
             } catch (e: Exception) {
-                _uiState.value = AddMovieUiState.Error("An Error Occurred While Loading the Data: ${e.message}")
+                _uiState.value = AddMovieUiState.Error("Error loading movie: ${e.message}")
             }
         }
     }
     fun loadMovieForEditDirect(movie: Movie) {
+        if (isMovieLoaded) return
+        isMovieLoaded = true
+
         _name.value = movie.name
         _director.value = movie.director
         _category.value = movie.category

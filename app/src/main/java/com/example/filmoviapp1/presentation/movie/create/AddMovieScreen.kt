@@ -96,12 +96,6 @@ fun AddMovieScreen (
         }
     }
 
-    LaunchedEffect(movie) {
-        movie?.let {
-            viewModel.loadMovieForEditDirect(it)
-        }
-    }
-
     LaunchedEffect(uiState) {
         if (uiState is AddMovieUiState.Success) {
             onSaveSuccess()
