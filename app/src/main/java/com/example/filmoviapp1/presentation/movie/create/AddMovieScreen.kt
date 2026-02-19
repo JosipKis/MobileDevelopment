@@ -3,6 +3,7 @@ package com.example.filmoviapp1.presentation.movie.create
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -55,6 +56,7 @@ import java.time.LocalDate
 import java.util.Calendar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -290,25 +292,26 @@ fun DatePickerField(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable {
-                DatePickerDialog(
-                    context,
-                    { _: DatePicker, year, month, day ->
-                        onDateSelected(LocalDate.of(year, month + 1, day))
-                    },
-                    initialDate.year,
-                    initialDate.monthValue - 1,
-                    initialDate.dayOfMonth
-                ).show()
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    DatePickerDialog(
+                        context,
+                        { _: DatePicker, year, month, day ->
+                            onDateSelected(LocalDate.of(year, month + 1, day))
+                        },
+                        initialDate.year,
+                        initialDate.monthValue - 1,
+                        initialDate.dayOfMonth
+                    ).show()
+                }
             }
     ) {
         OutlinedTextField(
             value = displayText,
             onValueChange = {},
-            readOnly = true,
+            enabled = false,
             label = { Text(label, color = Color.Red) },
             placeholder = { Text("Select Date", color = Color.LightGray) },
-            textStyle = LocalTextStyle.current.copy(color = Color.White),
             modifier = Modifier.fillMaxWidth()
         )
     }
